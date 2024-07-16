@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './app/store';
+import { addElement, removeElement, selectElements } from './features/elements/elementsSlice';
+import { AnimatePresence, motion } from 'framer-motion';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () => {
+    const dispatch = useDispatch();
+    const elements = useSelector(selectElements);
+
+    return (
+        <div className="App">
+            <div className="buttons">
+                <button onClick={() => dispatch(addElement())}>Добавить</button>
+                <button onClick={() => dispatch(removeElement())}>Удалить</button>
+            </div>
+            <div className="list">
+                <AnimatePresence>
+                    {elements.map((color, index) => (
+                        <motion.div
+                            key={color}
+                            initial={{ x: -window.innerWidth }}
+                            animate={{ x: 0 }}
+                            exit={{ x: window.innerWidth }}
+                            transition={{ duration: 0.5 }}
+                            className="element"
+                            style={{ backgroundColor: color }}
+                        />
+                    ))}
+                </AnimatePresence>
+            </div>
+        </div>
+    );
+};
 
 export default App;
